@@ -1,9 +1,8 @@
 ﻿using QRCoder;
 using System;
 using System.Drawing;
-using TwoFactorAuthNet.Providers.Qr;
 
-namespace TwoFactorAuthNet.QRCoder
+namespace TwoFactorAuthNet.Providers.Qr
 {
     public class QRCoderQRCodeProvider : IQrCodeProvider
     {
@@ -12,7 +11,7 @@ namespace TwoFactorAuthNet.QRCoder
         private readonly int _requestedversion = -1;
 
         /// <summary>
-        /// Gets the <see cref="TwoFactorAuthNet.Providers.Qr.ErrorCorrectionLevel"/> for the QR code.
+        /// Gets the <see cref="Qr.ErrorCorrectionLevel"/> for the QR code.
         /// </summary>
         public ErrorCorrectionLevel ErrorCorrectionLevel { get; private set; }
 
@@ -33,10 +32,10 @@ namespace TwoFactorAuthNet.QRCoder
 
         /// <summary>
         /// Initializes a new instance of a <see cref="QRCoderQRCodeProvider"/> with the specified
-        /// <see cref="TwoFactorAuthNet.Providers.Qr.ErrorCorrectionLevel"/>, <see cref="BackgroundColor"/>, 
+        /// <see cref="Qr.ErrorCorrectionLevel"/>, <see cref="BackgroundColor"/>,
         /// <see cref="ForegroundColor"/> and  <see cref="EciMode">EciMode</see>.
         /// </summary>
-        /// <param name="errorCorrectionLevel">The <see cref="TwoFactorAuthNet.Providers.Qr.ErrorCorrectionLevel"/> to use when generating QR codes.</param>
+        /// <param name="errorCorrectionLevel">The <see cref="Qr.ErrorCorrectionLevel"/> to use when generating QR codes.</param>
         /// <param name="backgroundColor">The background color to be used for the QR code.</param>
         /// <param name="foregroundColor">The foreground color to be used for the QR code.</param>
         /// <param name="eciMode">The <see cref="EciMode"/> to be used for the QR code.</param>

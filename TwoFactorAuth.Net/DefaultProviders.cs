@@ -19,12 +19,11 @@ public static class DefaultProviders
     /// Gets the default QR Code provider
     /// </summary>
     /// <seealso cref="IQrCodeProvider"/>
-    public static IQrCodeProvider DefaultQrCodeProvider { get { return new QrServerQrCodeProvider(); } }
+    public static IQrCodeProvider DefaultQrCodeProvider { get { return new QRCoderQRCodeProvider(); } }
 
     /// <summary>
     /// Gets the default Time provider
     /// </summary>
     /// <seealso cref="ITimeProvider"/>
     public static ITimeProvider DefaultTimeProvider { get { return new LocalMachineTimeProvider(); } }
-
 }

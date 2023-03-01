@@ -1,10 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>netstandard2.0;</TargetFrameworks>
+		<TargetFrameworks>net7.0</TargetFrameworks>
 		<Authors>RobIII</Authors>
 		<Company>RobIII</Company>
-		<PackageId>TwoFactorAuth.Net</PackageId>
+		<PackageId>TwoFactorAuth.Net-net70</PackageId>
 		<NoPackageAnalysis>true</NoPackageAnalysis>
 		<Product>TwoFactorAuth.Net</Product>
 		<Copyright>(C) 2015 - 2022 Devcorner.nl</Copyright>
@@ -12,44 +12,28 @@
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageProjectUrl>https://github.com/RobThree/TwoFactorAuth.Net</PackageProjectUrl>
 		<PackageTags>totp otp multi-factor two-factor 2fa 2factor mfa security oath security protection authentication oath</PackageTags>
-		<PackageReleaseNotes>* GetQrText() is now public</PackageReleaseNotes>
-		<Description>.Net library for two-factor (or multi-factor) authentication using TOTP and QR-codes.</Description>
+		<PackageReleaseNotes></PackageReleaseNotes>
+		<Description>.Net library for two-factor (or multi-factor) authentication using TOTP and QR-codes. .Net7 with only QRCoder provider</Description>
 		<PackageIcon>logo.png</PackageIcon>
 		<Version>1.4.1</Version>
 		<RootNamespace>TwoFactorAuthNet</RootNamespace>
 		<LangVersion>latest</LangVersion>
 		<Nullable>enable</Nullable>
-		<Configurations>Debug;Release;ReleaseWithDocumentation</Configurations>
+		<Configurations>Debug;Release</Configurations>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-		<DefineConstants>TRACE;RELEASE;NETSTANDARD2_0</DefineConstants>
+		<DefineConstants>TRACE;RELEASE</DefineConstants>
 	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseWithDocumentation|AnyCPU'">
-	  <DefineConstants>TRACE;RELEASE;NETSTANDARD2_0</DefineConstants>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard2.0|AnyCPU'">
-		<DocumentationFile>bin\Release\netstandard2.0\TwoFactorAuth.Net.xml</DocumentationFile>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='ReleaseWithDocumentation|netstandard2.0|AnyCPU'">
-	  <DocumentationFile>bin\Release\netstandard2.0\TwoFactorAuth.Net.xml</DocumentationFile>
-	</PropertyGroup>
-
-	<ItemGroup>
-		<PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="6.0.0">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
-		<PackageReference Include="System.Net.Http" Version="4.3.4" />
-	</ItemGroup>
 
 	<ItemGroup>
 		<None Include="..\logo.png">
 			<Pack>True</Pack>
 			<PackagePath></PackagePath>
 		</None>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="QRCoder" Version="1.4.3" />
 	</ItemGroup>
 </Project>

@@ -11,7 +11,7 @@ namespace TwoFactorAuthNet.Providers.Rng;
 /// <seealso cref="IRngProvider"/>
 public class DefaultRngProvider : IRngProvider
 {
-    private static readonly RNGCryptoServiceProvider _rngcryptoserviceprovider = new();
+    private static readonly RandomNumberGenerator _rngcryptoserviceprovider = RandomNumberGenerator.Create();
 
     /// <summary>
     /// Gets whether the provider is cryptographically secure.

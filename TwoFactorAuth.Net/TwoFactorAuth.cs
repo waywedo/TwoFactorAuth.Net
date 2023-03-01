@@ -28,42 +28,42 @@ public class TwoFactorAuth
     /// <summary>
     /// Gets a string value indicating the provider or service this account is associated with.
     /// </summary>
-    public string? Issuer { get; private set; }
+    public string? Issuer { get; }
 
     /// <summary>
     /// Gets the number of digits to display to the user.
     /// </summary>
     /// <see cref="DEFAULTDIGITS"/>
-    public int Digits { get; private set; }
+    public int Digits { get; }
 
     /// <summary>
     /// Gets the period that a TOTP code will be valid for, in seconds.
     /// </summary>
     /// <remarks>The period may be ignored by some 2FA client applications.</remarks>
     /// <see cref="DEFAULTPERIOD"/>
-    public int Period { get; private set; }
+    public int Period { get; }
 
     /// <summary>
     /// Gets the algorithm used for generating the TOTP codes.
     /// </summary>
     /// <remarks>The algorithm may be ignored by some 2FA client applications.</remarks>
     /// <see cref="DEFAULTALGORITHM"/>
-    public Algorithm Algorithm { get; private set; }
+    public Algorithm Algorithm { get; }
 
     /// <summary>
     /// Gets the <see cref="IQrCodeProvider"/> to be used for generating QR codes.
     /// </summary>
-    public IQrCodeProvider QrCodeProvider { get; private set; }
+    public IQrCodeProvider QrCodeProvider { get; }
 
     /// <summary>
     /// Gets the <see cref="IRngProvider"/> to be used for generating random values.
     /// </summary>
-    public IRngProvider RngProvider { get; private set; }
+    public IRngProvider RngProvider { get; }
 
     /// <summary>
     /// Gets the <see cref="ITimeProvider"/> to be used when retrieving time information.
     /// </summary>
-    public ITimeProvider TimeProvider { get; private set; }
+    public ITimeProvider TimeProvider { get; }
 
     /// <summary>
     /// Defines the default number of digits used when this number is unspecified.
@@ -118,7 +118,7 @@ public class TwoFactorAuth
     /// <param name="rngprovider">The <see cref="IRngProvider"/> to use for generating sequences of random numbers.</param>
     /// <param name="timeprovider">The <see cref="ITimeProvider"/> to use for generating sequences of random numbers.</param>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="digits"/> or <paramref name="period"/> are less than 0 or the specified 
+    /// Thrown when <paramref name="digits"/> or <paramref name="period"/> are less than 0 or the specified
     /// <paramref name="algorithm"/> is invalid.
     /// </exception>
     public TwoFactorAuth(
@@ -159,7 +159,7 @@ public class TwoFactorAuth
     }
 
     /// <summary>
-    /// Creates a 80 bit secret key to be shared with the user on wich the future valid TOTP codes will be based. 
+    /// Creates a 80 bit secret key to be shared with the user on wich the future valid TOTP codes will be based.
     /// The <see cref="CryptoSecureRequirement"/> is <see href="CryptoSecureRequirement.RequireSecure"/>.
     /// </summary>
     /// <returns>
@@ -170,7 +170,7 @@ public class TwoFactorAuth
 
     /// <summary>
     /// Creates a secret key with the specified number of bits of entropy to be shared with the user on wich the
-    /// future valid TOTP codes will be based. The <see cref="CryptoSecureRequirement"/> is 
+    /// future valid TOTP codes will be based. The <see cref="CryptoSecureRequirement"/> is
     /// <see href="CryptoSecureRequirement.RequireSecure"/>.
     /// </summary>
     /// <param name="bits">The number of bits of entropy to use.</param>
@@ -180,7 +180,7 @@ public class TwoFactorAuth
     public string CreateSecret(int bits) => CreateSecret(bits, CryptoSecureRequirement.RequireSecure);
 
     /// <summary>
-    /// Creates a secret key with the specified number of bits of entropy and specified 
+    /// Creates a secret key with the specified number of bits of entropy and specified
     /// <see cref="CryptoSecureRequirement"/> to be shared with the user on wich the future valid TOTP codes will
     /// be based.
     /// </summary>
@@ -203,7 +203,7 @@ public class TwoFactorAuth
         var bytes = (int)Math.Ceiling((double)bits / 5);    // We use 5 bits of each byte (since we have a
                                                             // 32-character 'alphabet' / base32)
 
-        // Note that we DO NOT actually "base32 encode" the random bytes, we simply take 5 bits from each random 
+        // Note that we DO NOT actually "base32 encode" the random bytes, we simply take 5 bits from each random
         // byte and map these directly to letters from the base32 alphabet (effectively 'base32 encoding on the fly').
         return string.Concat(RngProvider.GetRandomBytes(bytes).Select(v => Base32.Base32Alphabet[v & 31]));
     }
@@ -231,11 +231,15 @@ public class TwoFactorAuth
     /// <returns>Returns a TOTP code based on the specified secret for the specified timestamp.</returns>
     public string GetCode(string secret, long timestamp)
     {
-        using var algo = (KeyedHashAlgorithm)CryptoConfig.CreateFromName("HMAC" + Enum.GetName(typeof(Algorithm), Algorithm));
+        using KeyedHashAlgorithm algo = CryptoConfig.CreateFromName("HMAC" + Enum.GetName(typeof(Algorithm), Algorithm)) as KeyedHashAlgorithm
+            ?? throw new NullReferenceException("Unknown algorithm");
+
         algo.Key = Base32.Decode(secret);
+
         var ts = BitConverter.GetBytes(GetTimeSlice(timestamp, 0));
         var hashhmac = algo.ComputeHash(new byte[] { 0, 0, 0, 0, ts[3], ts[2], ts[1], ts[0] });
-        var offset = hashhmac[hashhmac.Length - 1] & 0x0F;
+        var offset = hashhmac[^1] & 0x0F;
+
         return $@"{((
             (hashhmac[offset + 0] << 24) |
             (hashhmac[offset + 1] << 16) |
@@ -415,7 +419,7 @@ public class TwoFactorAuth
     /// against.
     /// </param>
     /// <exception cref="TimeProviderException">
-    /// Thrown when the current instance's <see cref="TimeProvider"/> is off by more than the 
+    /// Thrown when the current instance's <see cref="TimeProvider"/> is off by more than the
     /// <see cref="DEFAULTLENIENCY"/> number of seconds.
     /// </exception>
     public void EnsureCorrectTime(IEnumerable<ITimeProvider> timeproviders) => EnsureCorrectTime(timeproviders, DEFAULTLENIENCY);
@@ -439,7 +443,7 @@ public class TwoFactorAuth
     /// </exception>
     public void EnsureCorrectTime(IEnumerable<ITimeProvider> timeproviders, int leniency)
     {
-        if (timeproviders == null || !timeproviders.Any())
+        if (timeproviders?.Any() != true)
         {
             throw new ArgumentNullException(nameof(timeproviders));
         }
@@ -502,13 +506,14 @@ public class TwoFactorAuth
     /// <returns>Returns a TOTP Uri with specified label and secret.</returns>
     public string GetQrText(string label, string secret)
     {
-        var x = "otpauth://totp/" + Uri.EscapeDataString(label)
+        var algorithmName = Enum.GetName(typeof(Algorithm), Algorithm)?.ToUpperInvariant() ?? string.Empty;
+
+        return "otpauth://totp/" + Uri.EscapeDataString(label)
             + "?secret=" + Uri.EscapeDataString(secret)
             + "&issuer=" + Uri.EscapeDataString(Issuer ?? string.Empty)
             + "&period=" + Period
-            + "&algorithm=" + Uri.EscapeDataString(Enum.GetName(typeof(Algorithm), Algorithm).ToUpperInvariant())
+            + "&algorithm=" + Uri.EscapeDataString(algorithmName)
             + "&digits=" + Digits;
-        return x;
     }
 
     /// <summary>
