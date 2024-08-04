@@ -1,10 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net7.0</TargetFrameworks>
+		<TargetFrameworks>net8.0</TargetFrameworks>
 		<Authors>RobIII</Authors>
 		<Company>RobIII</Company>
-		<PackageId>TwoFactorAuth.Net-net70</PackageId>
+		<PackageId>waywedo.TwoFactorAuth.Net</PackageId>
 		<NoPackageAnalysis>true</NoPackageAnalysis>
 		<Product>TwoFactorAuth.Net</Product>
 		<Copyright>(C) 2015 - 2022 Devcorner.nl</Copyright>
@@ -15,11 +15,14 @@
 		<PackageReleaseNotes></PackageReleaseNotes>
 		<Description>.Net library for two-factor (or multi-factor) authentication using TOTP and QR-codes. .Net7 with only QRCoder provider</Description>
 		<PackageIcon>logo.png</PackageIcon>
-		<Version>1.4.1</Version>
+		<Version>1.5.0</Version>
 		<RootNamespace>TwoFactorAuthNet</RootNamespace>
 		<LangVersion>latest</LangVersion>
 		<Nullable>enable</Nullable>
 		<Configurations>Debug;Release</Configurations>
+		<RepositoryUrl>https://github.com/waywedo/TwoFactorAuth.Net</RepositoryUrl>
+		<EmbedUntrackedSources>true</EmbedUntrackedSources>
+		<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -34,6 +37,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="QRCoder" Version="1.4.3" />
+	  <PackageReference Include="QRCoder" Version="1.6.0" />
 	</ItemGroup>
 </Project>
